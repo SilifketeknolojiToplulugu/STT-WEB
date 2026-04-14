@@ -1152,7 +1152,7 @@ const SilifkeTeknoloji: React.FC = () => {
                     </div>
                     <div className="flex items-center space-x-3 text-gray-300">
                       <span>📱</span>
-                      <span>+90 501 168 32 59</span>
+                      <span>+90 505 777 03 14</span>
                     </div>
                     <div className="flex items-center space-x-3 text-gray-300">
                       <span>📍</span>

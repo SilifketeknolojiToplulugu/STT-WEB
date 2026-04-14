@@ -66,7 +66,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ onBack }) => {
     {
       icon: <Phone className="w-6 h-6" />,
       title: isTR ? 'Telefon' : 'Phone',
-      content: '+90 501 168 32 59',
+      content: '+90 505 777 03 14',
       link: 'tel:+905057770314'
     },
     {
@@ -249,7 +249,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ onBack }) => {
                   </motion.a>
 
                   <div className="mt-6 text-sm text-gray-400">
-                    <p>📱 +90 501 168 32 59</p>
+                    <p>📱 +90 505 777 03 14</p>
                     <p className="mt-1">{isTR ? '⏰ 7/24 Destek' : '⏰ 24/7 Support'}</p>
                   </div>
                 </div>
