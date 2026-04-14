@@ -892,7 +892,7 @@ const SilifkeTeknoloji: React.FC = () => {
                 src="/logo-512.webp"
                 alt={isTR ? "Silifke Teknoloji Topluluğu - Ana Sayfaya Dön" : "Silifke Technology Community - Back to Home"}
                 className="relative h-18 sm:h-20 md:h-24 lg:h-24 w-auto object-contain filter drop-shadow-[0_0_25px_rgba(255,215,0,0.5)]
-                         scale-[1.8] sm:scale-[1.8] md:scale-[2.0] lg:scale-[2.0] hover:scale-[1.9] sm:hover:scale-[1.9] md:hover:scale-[2.1] lg:hover:scale-[2.1]
+                         scale-[1.35] sm:scale-[1.8] md:scale-[2.0] lg:scale-[2.0] hover:scale-[1.45] sm:hover:scale-[1.9] md:hover:scale-[2.1] lg:hover:scale-[2.1]
                          transition-all duration-500 cursor-pointer group-hover:drop-shadow-[0_0_45px_rgba(255,215,0,0.8)]"
                 loading="eager"
                 decoding="async"
