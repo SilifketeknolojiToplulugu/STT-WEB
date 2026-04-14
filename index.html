@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), speaker=()" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://i.ytimg.com https://img.youtube.com; connect-src 'self' https://*.supabase.co https://*.supabase.in; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload" />
+    
+    <!-- Favicon and PWA -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo-64.png" />
+    <link rel="apple-touch-icon" href="/logo-128.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="canonical" href="https://silifketeknoloji.org/" />
+    <link rel="alternate" href="https://silifketeknoloji.org/" hreflang="tr" />
+    <link rel="alternate" href="https://silifketeknoloji.org/?lang=en" hreflang="en" />
+    <link rel="alternate" href="https://silifketeknoloji.org/" hreflang="x-default" />
+    
+    <!-- Viewport and Basic Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Silifke Teknoloji Topluluğu - Yerelden evrensele teknoloji üretimi. Yazılım, yapay zeka, dijital dönüşüm projeleri ve topluluk buluşmalarıyla Silifke'nin teknoloji geleceğini birlikte inşa ediyoruz." />
+    <meta name="keywords" content="Silifke Teknoloji Topluluğu, Silifke teknoloji, Mersin yazılım, yapay zeka, dijital dönüşüm, web geliştirme, topluluk, hackathon, mentorluk, girişimcilik, React, Python, open source" />
+    <meta name="author" content="Silifke Teknoloji Topluluğu" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="language" content="Turkish" />
+    <meta name="geo.region" content="TR-33" />
+    <meta name="geo.placename" content="Silifke, Mersin" />
+    <meta name="geo.position" content="36.3764;33.9283" />
+    <meta name="ICBM" content="36.3764, 33.9283" />
+
+    <!-- Performance optimizations -->
+    <link rel="preload" href="/logo-256.webp" as="image" type="image/webp" />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.youtube.com" />
+
+    <!-- PWA meta tags -->
+    <meta name="theme-color" content="#FFD700" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Silifke Teknoloji Topluluğu - Yenilik, İşbirliği, Gelecek" />
+    <meta property="og:description" content="Yerelden evrensele teknoloji üretimi. Yazılım, yapay zeka ve dijital dönüşüm projeleriyle Silifke'nin teknoloji geleceğini birlikte inşa ediyoruz." />
+    <meta property="og:image" content="https://silifketeknoloji.org/logo-512.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="Silifke Teknoloji Topluluğu Logo" />
+    <meta property="og:url" content="https://silifketeknoloji.org" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:site_name" content="Silifke Teknoloji Topluluğu" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Silifke Teknoloji Topluluğu - Yenilik, İşbirliği, Gelecek" />
+    <meta name="twitter:description" content="Yerelden evrensele teknoloji üretimi. Yazılım, yapay zeka ve dijital dönüşüm projeleriyle Silifke'nin teknoloji geleceğini birlikte inşa ediyoruz." />
+    <meta name="twitter:image" content="https://silifketeknoloji.org/logo-512.png" />
+    <meta name="twitter:image:alt" content="Silifke Teknoloji Topluluğu Logo" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Silifke Teknoloji Topluluğu",
+      "alternateName": "Silifke Technology Community",
+      "url": "https://silifketeknoloji.org",
+      "logo": "https://silifketeknoloji.org/logo-512.png",
+      "image": "https://silifketeknoloji.org/logo-512.png",
+      "description": "Yerelden evrensele teknoloji üretimi. Yazılım, yapay zeka ve dijital dönüşüm projeleriyle toplumsal fayda üreten teknoloji topluluğu.",
+      "foundingDate": "2025",
+      "knowsAbout": ["Yazılım Geliştirme", "Yapay Zeka", "Web Geliştirme", "Dijital Dönüşüm", "Açık Kaynak"],
+      "sameAs": [
+        "https://github.com/silifketeknoloji",
+        "https://instagram.com/silifketeknoloji"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "areaServed": "TR",
+        "availableLanguage": ["Turkish", "English"]
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Gazi Mahallesi İlhan Akgün Caddesi Şahin Apartmanı No:12 Daire:4",
+        "addressLocality": "Silifke",
+        "addressRegion": "Mersin",
+        "postalCode": "33950",
+        "addressCountry": "TR"
+      },
+      "areaServed": {
+        "@type": "GeoCircle",
+        "geoMidpoint": {
+          "@type": "GeoCoordinates",
+          "latitude": 36.3764,
+          "longitude": 33.9283
+        }
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Silifke Teknoloji Topluluğu",
+      "url": "https://silifketeknoloji.org",
+      "inLanguage": ["tr", "en"],
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://silifketeknoloji.org/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    
+    <title>Silifke Teknoloji Topluluğu - Yenilik, İşbirliği, Gelecek</title>
+    
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

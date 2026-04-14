@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Block access to admin areas
+Disallow: /admin/
+Disallow: /api/private/
+
+# Block access to development files
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /*.config.js
+Disallow: /vite.config.ts
+
+# Allow access to static assets
+Allow: /public/
+Allow: /assets/
+
+# Sitemap
+Sitemap: https://silifketeknoloji.org/sitemap.xml
