@@ -1148,7 +1148,7 @@ const SilifkeTeknoloji: React.FC = () => {
                   <div className="space-y-3 text-sm">
                     <div className="flex items-center space-x-3 text-gray-300">
                       <span>📧</span>
-                      <span>silifketeknoloji@gmail.com</span>
+                      <span>info@simay.tech</span>
                     </div>
                     <div className="flex items-center space-x-3 text-gray-300">
                       <span>📱</span>

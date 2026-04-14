@@ -60,14 +60,14 @@ const ContactPage: React.FC<ContactPageProps> = ({ onBack }) => {
     {
       icon: <Mail className="w-6 h-6" />,
       title: isTR ? 'E-posta' : 'Email',
-      content: 'silifketeknoloji@gmail.com',
-      link: 'mailto:silifketeknoloji@gmail.com'
+      content: 'info@simay.tech',
+      link: 'mailto:info@simay.tech'
     },
     {
       icon: <Phone className="w-6 h-6" />,
       title: isTR ? 'Telefon' : 'Phone',
       content: '+90 501 168 32 59',
-      link: 'tel:+905011683259'
+      link: 'tel:+905057770314'
     },
     {
       icon: <Clock className="w-6 h-6" />,
@@ -235,7 +235,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ onBack }) => {
                   </div>
 
                   <motion.a
-                    href="https://wa.me/905011683259"
+                    href="https://wa.me/905057770314"
                     target="_blank"
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.05 }}

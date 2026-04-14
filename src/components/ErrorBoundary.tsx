@@ -135,10 +135,10 @@ class ErrorBoundary extends Component<Props, State> {
                   {copy.contactPrompt}
                 </p>
                 <a
-                  href="mailto:silifketeknoloji@gmail.com"
+                  href="mailto:info@simay.tech"
                   className="text-yellow-400 hover:text-yellow-300 transition-colors duration-300 text-sm font-medium"
                 >
-                  silifketeknoloji@gmail.com
+                  info@simay.tech
                 </a>
               </div>
             </div>

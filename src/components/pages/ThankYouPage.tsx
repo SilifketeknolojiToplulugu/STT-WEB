@@ -246,7 +246,7 @@ const ThankYouPage: React.FC<ThankYouPageProps> = ({ onBack }) => {
             </p>
             <div className="flex justify-center space-x-6">
               <a
-                href="mailto:silifketeknoloji@gmail.com"
+                href="mailto:info@simay.tech"
                 className="text-blue-400 hover:text-blue-300 transition-colors duration-300"
               >
                 {isTR ? 'E-posta' : 'Email'}

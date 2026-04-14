@@ -333,10 +333,10 @@ const getFaqItems = (isTR: boolean): FaqItem[] => {
             <p className={paragraphClass}>
               İş birliği teklifleri için:{" "}
               <a
-                href="mailto:info@silifketeknoloji.org"
+                href="mailto:info@simay.tech"
                 className="text-yellow-200 underline-offset-4 hover:underline"
               >
-                info@silifketeknoloji.org
+                info@simay.tech
               </a>
             </p>
           </>
@@ -669,10 +669,10 @@ const getFaqItems = (isTR: boolean): FaqItem[] => {
           <p className={paragraphClass}>
             For collaboration proposals, reach out at{" "}
             <a
-              href="mailto:info@silifketeknoloji.org"
+              href="mailto:info@simay.tech"
               className="text-yellow-200 underline-offset-4 hover:underline"
             >
-              info@silifketeknoloji.org
+              info@simay.tech
             </a>
             .
           </p>
