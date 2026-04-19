@@ -1562,55 +1562,93 @@ const SilifkeTeknoloji: React.FC = () => {
         </div>
       </main>
 
-      {/* Floating Quick Actions */}
+      {/* Floating Quick Actions — Desktop (xl+) */}
       <motion.aside
         initial={{ opacity: 0, x: 40, y: 40 }}
         animate={{ opacity: 1, x: 0, y: 0 }}
         transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-        className="pointer-events-auto hidden xl:flex flex-col space-y-4 fixed bottom-16 right-12 z-50"
+        className="pointer-events-auto hidden xl:flex flex-col fixed bottom-10 right-8 z-50"
       >
-        <div className="glass-panel glass-border-accent p-6 w-72 shadow-yellow-500/15">
-          <div className="mb-5">
-            <span className="text-xs uppercase tracking-[0.35em] text-yellow-300/80">{isTR ? 'Hızlı Erişim' : 'Quick Access'}</span>
-            <h3 className="mt-2 text-lg font-semibold text-white">{isTR ? 'Tanıtım Videomuz' : 'Our Intro Video'}</h3>
-            <p className="text-sm text-gray-300">
-              {isTR
-                ? 'Baloncuğa tıkladığında tanıtım videomuz oynatılmaya başlar.'
-                : 'Tap the bubble to start playing our intro video.'}
-            </p>
+        <div className="glass-panel glass-border-accent p-4 w-56 shadow-yellow-500/15">
+          <div className="mb-3">
+            <span className="text-[0.6rem] uppercase tracking-[0.3em] text-yellow-300/80">{isTR ? 'Hızlı Erişim' : 'Quick Access'}</span>
+            <h3 className="mt-1 text-sm font-semibold text-white">{isTR ? 'Tanıtım Videomuz' : 'Our Intro Video'}</h3>
           </div>
-          <div className="space-y-3">
-            <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-              {isQuickVideoPlaying ? (
-                <iframe
-                  className="h-44 w-full"
-                  src={quickAccessVideoUrl}
-                  title={isTR ? 'Silifke Teknoloji tanıtım videosu' : 'Silifke Technology Community intro video'}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
+          <div className="overflow-hidden rounded-xl border border-white/10 bg-white/5">
+            {isQuickVideoPlaying ? (
+              <iframe
+                className="h-32 w-full"
+                src={quickAccessVideoUrl}
+                title={isTR ? 'Silifke Teknoloji tanıtım videosu' : 'Silifke Technology Community intro video'}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsQuickVideoPlaying(true)}
+                className="group relative block h-32 w-full overflow-hidden bg-transparent text-left"
+              >
+                <img
+                  src={quickAccessThumbnail}
+                  alt={isTR ? 'Silifke Teknoloji YouTube videosu' : 'Silifke Technology Community YouTube video'}
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  loading="lazy"
                 />
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setIsQuickVideoPlaying(true)}
-                  className="group relative block h-44 w-full overflow-hidden bg-transparent text-left"
-                >
-                  <img
-                    src={quickAccessThumbnail}
-                    alt={isTR ? 'Silifke Teknoloji YouTube videosu' : 'Silifke Technology Community YouTube video'}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                    <span className="flex h-16 w-16 items-center justify-center rounded-full bg-yellow-400/90 text-black transition-transform duration-300 group-hover:scale-110">
-                      <Play className="h-7 w-7" />
-                    </span>
-                    <span className="text-sm font-medium text-white/90">{isTR ? 'Videoyu Başlat' : 'Play Video'}</span>
-                  </div>
-                </button>
-              )}
-            </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400/90 text-black transition-transform duration-300 group-hover:scale-110">
+                    <Play className="h-5 w-5" />
+                  </span>
+                  <span className="text-xs font-medium text-white/90">{isTR ? 'Videoyu Başlat' : 'Play Video'}</span>
+                </div>
+              </button>
+            )}
+          </div>
+        </div>
+      </motion.aside>
+
+      {/* Floating Quick Actions — Mobile (sm–lg) */}
+      <motion.aside
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.8, ease: "easeOut" }}
+        className="pointer-events-auto flex xl:hidden fixed bottom-5 right-4 z-50"
+      >
+        <div className="glass-panel glass-border-accent p-3 w-44 shadow-yellow-500/15">
+          <div className="mb-2">
+            <span className="text-[0.55rem] uppercase tracking-[0.25em] text-yellow-300/80">{isTR ? 'Hızlı Erişim' : 'Quick Access'}</span>
+            <h3 className="text-xs font-semibold text-white leading-tight">{isTR ? 'Tanıtım Videosu' : 'Intro Video'}</h3>
+          </div>
+          <div className="overflow-hidden rounded-lg border border-white/10 bg-white/5">
+            {isQuickVideoPlaying ? (
+              <iframe
+                className="h-24 w-full"
+                src={quickAccessVideoUrl}
+                title={isTR ? 'Silifke Teknoloji tanıtım videosu' : 'Silifke Technology Community intro video'}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsQuickVideoPlaying(true)}
+                className="group relative block h-24 w-full overflow-hidden bg-transparent text-left"
+              >
+                <img
+                  src={quickAccessThumbnail}
+                  alt={isTR ? 'Silifke Teknoloji YouTube videosu' : 'Silifke Technology Community YouTube video'}
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-yellow-400/90 text-black transition-transform duration-300 group-hover:scale-110">
+                    <Play className="h-4 w-4" />
+                  </span>
+                </div>
+              </button>
+            )}
           </div>
         </div>
       </motion.aside>
