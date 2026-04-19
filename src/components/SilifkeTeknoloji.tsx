@@ -110,6 +110,7 @@ const SilifkeTeknoloji: React.FC = () => {
   const [isAdminAuthorized, setIsAdminAuthorized] = useState(false);
   const [isQuickVideoPlaying, setIsQuickVideoPlaying] = useState(false);
   const [pendingScrollTarget, setPendingScrollTarget] = useState<'faq' | null>(null);
+  const [pendingBlogPost, setPendingBlogPost] = useState<import('./pages/BlogPage').BlogPostData | null>(null);
   const { scrollY } = useScroll();
 
   const scrollToFaqImmediate = useCallback(() => {
@@ -676,6 +677,16 @@ const SilifkeTeknoloji: React.FC = () => {
     }
   };
 
+  const handleBlogPostNavigation = (slug: string, post: import('./pages/BlogPage').BlogPostData | null) => {
+    setPendingBlogPost(post);
+    setCurrentPage('blog-post');
+    setIsMobileMenuOpen(false);
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+      window.history.pushState({ page: 'blog-post' }, '', `/blog/${slug}`);
+    }
+  };
+
   const handleScrollToFaq = () => {
     setIsMobileMenuOpen(false);
 
@@ -797,12 +808,12 @@ const SilifkeTeknoloji: React.FC = () => {
       }
       return <Suspense fallback={pageFallback}><AdminPage onBack={handleBackToHome} onLogout={handleAdminLogout} /></Suspense>;
     case 'blog':
-      return <Suspense fallback={pageFallback}><BlogPage onBack={handleBackToHome} /></Suspense>;
+      return <Suspense fallback={pageFallback}><BlogPage onBack={handleBackToHome} onNavigateToBlogPost={handleBlogPostNavigation} /></Suspense>;
     case 'blog-post': {
       const currentSlug = typeof window !== 'undefined'
         ? normalizePath(window.location.pathname).replace('/blog/', '')
         : '';
-      return <Suspense fallback={pageFallback}><BlogPostPage slug={currentSlug} onBack={() => handlePageChange('blog')} /></Suspense>;
+      return <Suspense fallback={pageFallback}><BlogPostPage slug={currentSlug} onBack={() => { setPendingBlogPost(null); handlePageChange('blog'); }} fallbackPost={pendingBlogPost} /></Suspense>;
     }
     case 'home':
     default:
@@ -1193,7 +1204,7 @@ const SilifkeTeknoloji: React.FC = () => {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="relative z-40 pt-24 sm:pt-32 pb-16 px-4 sm:px-6">
+      <main className="relative z-40 pt-28 sm:pt-36 pb-16 px-4 sm:px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="relative text-center space-y-6 sm:space-y-8">
             {/* Hero Title */}
@@ -1204,7 +1215,7 @@ const SilifkeTeknoloji: React.FC = () => {
               transition={{ duration: 0.8, delay: contentDelay }}
               className="space-y-6 sm:space-y-8 mt-4 sm:mt-6 md:mt-8 lg:mt-12 mb-8 sm:mb-12"
             >
-              <h1 className="text-display text-4xl md:text-7xl lg:text-8xl xl:text-9xl font-black leading-none tracking-tighter">
+              <h1 className="text-display text-4xl md:text-7xl lg:text-8xl xl:text-9xl font-black leading-tight md:leading-none tracking-tighter">
                 <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent font-extrabold">
                   {isTR ? 'Silifke Teknoloji Topluluğu' : 'Silifke Technology Community'}
                 </span>
@@ -1294,6 +1305,31 @@ const SilifkeTeknoloji: React.FC = () => {
                               -translate-x-full group-hover:translate-x-[200%] 
                               transition-transform duration-700 ease-out" />
               </motion.button>
+            </motion.div>
+
+            {/* Fener Link */}
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ duration: 0.6, delay: contentDelay + itemDelayIncrement * 2.5 }}
+              className="flex justify-center mt-5"
+            >
+              <a
+                href="https://fener.silifketeknoloji.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3 px-6 py-3 rounded-full border border-yellow-400/30 bg-yellow-400/5
+                           hover:bg-yellow-400/15 hover:border-yellow-400/60 transition-all duration-300 backdrop-blur-sm"
+              >
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-yellow-400" />
+                </span>
+                <span className="text-sm font-semibold text-yellow-300 group-hover:text-yellow-200 tracking-wide transition-colors duration-300">
+                  {isTR ? 'Fener Platformu →' : 'Fener Platform →'}
+                </span>
+              </a>
             </motion.div>
 
             {/* Hero Highlights */}
@@ -1493,8 +1529,8 @@ const SilifkeTeknoloji: React.FC = () => {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 2, delay: 1 }}
-                className="absolute top-4 left-4 w-20 h-20 md:top-20 md:left-10 md:w-32 md:h-32 rounded-full border border-white/25 shadow-lg shadow-white/15 [box-shadow:_0_0_50px_rgba(255,215,0,0.15)]
-                           pointer-events-auto bg-black/40 backdrop-blur-sm flex items-center justify-center group focus:outline-none
+                className="hidden md:flex absolute md:top-20 md:left-10 md:w-32 md:h-32 rounded-full border border-white/25 shadow-lg shadow-white/15 [box-shadow:_0_0_50px_rgba(255,215,0,0.15)]
+                           pointer-events-auto bg-black/40 backdrop-blur-sm items-center justify-center group focus:outline-none
                            focus:ring-2 focus:ring-yellow-300/70 focus:ring-offset-2 focus:ring-offset-black z-10"
                 aria-label={isTR ? 'Blog sayfasını aç' : 'Open the blog page'}
               >

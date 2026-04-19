@@ -80,12 +80,38 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onBack }) => {
 
   const projectData = [
     {
+      id: 99,
+      image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=400&fit=crop&auto=format&q=80",
+      category: 'web',
+      status: 'in-progress' as const,
+      technologies: ['PWA', 'LoRa Mesh', 'Bluetooth Mesh', 'Offline-first', 'Apache-2.0'],
+      teamSize: 6,
+      demoUrl: 'https://fener.silifketeknoloji.org',
+      translations: {
+        tr: {
+          title: "Fener – İnternetsiz İletişim Ağı",
+          description: "Afet anında internetsiz çalışan iletişim ağı",
+          longDescription: "İnternet yokken, baz istasyonu çökmüşken bile çalışan yurttaş-sahipli açık kaynak iletişim altyapısı. PWA + Bluetooth mesh + LoRa gateway ile afet bölgelerinde kesintisiz haberleşme sağlar. Silifke'de doğar, Türkiye'nin her ilçesine şablon olur. Silifke Teknoloji Topluluğu ile birlikte geliştiriliyor.",
+          duration: "2025 - Devam Ediyor",
+          impact: "Afet anında internetsiz haberleşme altyapısı; Türkiye geneline şablon olması hedefleniyor."
+        },
+        en: {
+          title: "Fener – Offline Communication Network",
+          description: "A communication network that works without internet during disasters",
+          longDescription: "An open-source, citizen-owned communication infrastructure that works even when the internet is down and cell towers have collapsed. PWA + Bluetooth mesh + LoRa gateway ensures uninterrupted communication in disaster zones. Born in Silifke, designed to become a blueprint for every district in Turkey. Developed together with Silifke Technology Community.",
+          duration: "2025 – Ongoing",
+          impact: "Offline communication infrastructure for disasters; aimed to become a nationwide blueprint across Turkey."
+        }
+      }
+    },
+    {
       id: 7,
       image: "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=600&h=400&fit=crop&auto=format&q=80",
       category: 'web',
       status: 'in-progress' as const,
       technologies: ['React', 'Node.js', 'QR Code API', 'PostgreSQL', 'Tailwind CSS'],
       teamSize: 8,
+      demoUrl: 'https://www.menusmy.com/',
       translations: {
         tr: {
           title: "QR Kod Hizmet Platformu",
@@ -218,7 +244,9 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onBack }) => {
         description: translation.description,
         longDescription: translation.longDescription,
         duration: translation.duration,
-        impact: translation.impact
+        impact: translation.impact,
+        demoUrl: 'demoUrl' in project ? (project as { demoUrl?: string }).demoUrl : undefined,
+        githubUrl: 'githubUrl' in project ? (project as { githubUrl?: string }).githubUrl : undefined,
       } satisfies Project;
     });
     if (cmsItems.length > 0) {
@@ -403,6 +431,22 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onBack }) => {
                         <span>{project.duration}</span>
                       </div>
                     </div>
+
+                    {/* Direct Demo Link */}
+                    {project.demoUrl && (
+                      <a
+                        href={project.demoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="mt-4 flex items-center justify-center gap-2 w-full py-2 rounded-lg
+                                   border border-yellow-400/30 bg-yellow-400/5 text-yellow-400 text-sm font-semibold
+                                   hover:bg-yellow-400/20 hover:border-yellow-400/60 transition-all duration-300"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        {isTR ? 'Siteye Git' : 'Visit Site'}
+                      </a>
+                    )}
                   </div>
                 </motion.div>
               ))}
