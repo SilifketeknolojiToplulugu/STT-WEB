@@ -1204,7 +1204,7 @@ const SilifkeTeknoloji: React.FC = () => {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="relative z-40 pt-28 sm:pt-36 pb-16 px-4 sm:px-6">
+      <main className="relative z-30 pt-28 sm:pt-36 pb-16 px-4 sm:px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="relative text-center space-y-6 sm:space-y-8">
             {/* Hero Title */}
