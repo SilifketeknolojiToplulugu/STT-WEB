@@ -1611,9 +1611,9 @@ const SilifkeTeknoloji: React.FC = () => {
       {/* Floating Quick Actions — Mobile (sm–lg) */}
       <motion.aside
         initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.8, ease: "easeOut" }}
-        className="pointer-events-auto flex xl:hidden fixed bottom-5 right-4 z-50"
+        animate={{ opacity: isMobileMenuOpen ? 0 : 1, y: isMobileMenuOpen ? 30 : 0, pointerEvents: isMobileMenuOpen ? 'none' : 'auto' }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+        className="flex xl:hidden fixed bottom-5 right-4 z-30"
       >
         <div className="glass-panel glass-border-accent p-3 w-44 shadow-yellow-500/15">
           <div className="mb-2">
