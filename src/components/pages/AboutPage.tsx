@@ -572,7 +572,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onBack, onJoin }) => {
                       <img
                         src={member.imageUrl}
                         alt={`${member.name} - ${member.role}`}
-                        className="w-full h-64 sm:h-full object-cover object-center
+                        className="w-full h-72 sm:h-full object-cover object-top
                                  group-hover:scale-110 transition-transform duration-700 ease-out"
                         loading="lazy"
                       />

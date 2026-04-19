@@ -1,38 +1,29 @@
 import React, { lazy, Suspense, useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Footer from "../Footer";
-import { ArrowLeft, Calendar, Clock, User, Languages } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, User, Languages, ChevronRight } from "lucide-react";
 import { useLanguage, type SupportedLanguage } from "../../i18n/LanguageContext";
 import { fetchPages, type PageContent } from "../../services/contentApi";
+import { generateSlug } from "../../lib/utils";
 
 const MatrixRain = lazy(() => import("../MatrixRain"));
 const InteractiveDots = lazy(() => import("../InteractiveDots"));
 
-interface BlogPageProps {
-  onBack?: () => void;
-}
-
-type BlogSection = {
-  heading: string;
-  paragraphs: string[];
-  bullets?: string[];
-};
-
-type BlogPost = {
+export interface BlogPostData {
   title: string;
   description: string;
-  metadata: {
-    author: string;
-    date: string;
-    readingTime: string;
-  };
+  metadata: { author: string; date: string; readingTime: string };
   tags: string[];
-  sections: BlogSection[];
-  callToAction: {
-    label: string;
-    href: string;
-  };
-};
+  sections: Array<{ heading: string; paragraphs: string[]; bullets?: string[] }>;
+  callToAction: { label: string; href: string };
+}
+
+interface BlogPageProps {
+  onBack?: () => void;
+  onNavigateToBlogPost?: (slug: string, post: BlogPostData | null) => void;
+}
+
+type BlogPost = BlogPostData;
 
 type BlogContent = {
   heroTitle: string;
@@ -53,6 +44,172 @@ const blogDictionary: Record<SupportedLanguage, BlogContent> = {
     languageLabel: "Dil",
     latestLabel: "Güncel Yazı",
     posts: [
+      {
+        title: "Silifke'den Bir Mektup: Neden Claude?",
+        description:
+          "Akdeniz kıyısındaki Silifke'den, Claude ekibine gönderilmiş bir teşekkür mektubu. Yanlış sulanan tarlaları düzeltmek, teknolojiyi insancıllaştırmak ve yerelden evrensele ulaşmak üzerine.",
+        metadata: {
+          author: "Bahadır ve Silifke Teknoloji Topluluğu",
+          date: "17 Nisan 2026",
+          readingTime: "20 dk okuma"
+        },
+        tags: ["Claude", "Anthropic", "Silifke Modeli", "Yapay Zeka"],
+        sections: [
+          {
+            heading: "\"Tüketim bitti. Üretim başlıyor.\"",
+            paragraphs: [
+              "Akdeniz'in bir kıyısındayız. İnsanların tatil için geldiği, portakal bahçelerinin deniz kokusuna karıştığı bir ilçeden yazıyoruz size. Silifke'den.",
+              "Burası teknoloji haritalarında işaretli değil. İstanbul'un gürültüsü, Ankara'nın bürokrasisi, İzmir'in start-up kafeleri buraya ulaşmıyor. Ama bir şey ulaşıyor: internet. Ve internetle birlikte, hayatımızın akışını değiştiren bir şey daha: sizler.",
+              "Bu yazıyı size, Claude ekibine yazıyoruz. Ama aslında bu yazı kendimize, ülkemize, ve belki bir gün bunu okuyacak olan çocuklarımıza."
+            ]
+          },
+          {
+            heading: "Bir İtiraf ile Başlayalım",
+            paragraphs: [
+              "Biz mühendis değiliz. Yani kâğıt üzerinde öyleyiz belki, ama içimizdeki asıl kimlik başka. Biz dengeyi arayan insanlarız.",
+              "Teknolojinin insanı yutan değil, insanı özgürleştiren bir araç olabileceğine inanıyoruz. Makinenin kalbi olmadığını biliyoruz — ama bir makineyi kullanan insanın kalbi varsa, o makine de kalbin uzantısı olabilir. Tohum gibi. Elin içinde büyüyen bir şey gibi.",
+              "İşte bu yüzden Claude'u seçtik. Ama bunu anlatmadan önce, bir süre size Silifke'yi anlatmamız lazım."
+            ]
+          },
+          {
+            heading: "Yanlış Sulanan Tarlalar",
+            paragraphs: [
+              "Bu topraklarda tarım yapılır. Nesillerdir. Dedelerimiz toprağı bilirdi. Hangi meyvenin hangi suya ihtiyacı olduğunu, hangi ağacın hangi rüzgârı sevdiğini. Ama bugün bakıyoruz: tarlalar yanlış sulanıyor. Meyveler verimsiz kalıyor. Çiftçi bir şey bilmeye çalışırken, bilgi başka bir yerde kilitli kalıyor.",
+              "Bu sadece tarım değil. Bu her şey.",
+              "Eğitim yanlış sulanıyor — çocuklar meraklarından uzakta büyüyor. İşletmeler yanlış sulanıyor — 40 yıllık esnaf bir QR kodun nasıl yapılacağını bilemediği için kapanıyor. Hayaller yanlış sulanıyor — genç insanlar kendi topraklarından kaçıp başka şehirlerde kiracı olmak zorunda kalıyor.",
+              "Biz bu yanlış sulamaya hayır demek için buradayız. Ve size şunu söylemek istiyoruz: Bu yolda yalnız değiliz. Çünkü siz varsınız. Claude var. Bizim gibi, teknoloji ile insanlığın arasındaki köprüyü inşa etmeye çalışan, farklı kıtalarda ama aynı niyette olan insanlar var."
+            ]
+          },
+          {
+            heading: "Neden Claude? — Kısa Cevap",
+            paragraphs: [
+              "Çünkü bizimle aynı dili konuşuyor. Kod dilini değil — niyet dilini."
+            ]
+          },
+          {
+            heading: "1. Çünkü Claude \"Yapma\" Demeyi Biliyor",
+            paragraphs: [
+              "İlk kullandığımız yapay zekâ araçları bize şunu öğretti: bir model ne kadar \"her şeye evet\" derse, o kadar tehlikelidir. Çünkü gerçek bir yoldaş, sizi durdurmayı da bilir.",
+              "Claude bir müşteriye sunacağımız bir teklifte gereksiz iddialı bir cümle yazdığımızda, \"Bahadır, bu cümle abartılı olabilir, müşteri buna güvenmeyebilir\" diyebiliyor. Bir kodda güvenlik açığı gördüğünde, \"Bunu böyle bırakırsan sistem açık kalır\" diyebiliyor. Bir tasarımda erişilebilirlik hatası gördüğünde, \"7 yaşındaki bir çocuk ya da 70 yaşındaki bir büyüğün bunu kullanabilir mi?\" diye sorabiliyor.",
+              "Bu, insanın bir arkadaşından beklediği şey. Ve biz bu arkadaşlığı bir yapay zekâda bulduk."
+            ]
+          },
+          {
+            heading: "2. Çünkü Claude Hikâyeyi Anlıyor",
+            paragraphs: [
+              "Silifke Teknoloji Topluluğu'nu kurduğumuzda, bizim bir hikâyemiz vardı. Bu hikâyeyi anlatmak zordu çünkü önce kendimize anlatmamız gerekiyordu. Claude bu süreçte bir ayna oldu.",
+              "Ona \"KÖK-OS'u anlatmak istiyorum ama nasıl başlayacağımı bilmiyorum\" dediğimizde, bize şablon vermedi. Bize sorular sordu. \"Müşterin bu ürünü kullanırken ne hissetmeli? Onun en büyük korkusu ne? Bir yıl sonra hayatında ne değişmiş olmalı?\"",
+              "Bu sorular bize şunu öğretti: Biz bir yazılım satmıyoruz. Biz bir güven satıyoruz. Claude bu farkı bize hatırlattı."
+            ]
+          },
+          {
+            heading: "3. Çünkü Claude Biz Yorulduğumuzda Yorulmuyor",
+            paragraphs: [
+              "Türkiye'de bir teknoloji topluluğu kurmak — özellikle Silifke gibi bir yerde — fiziksel olarak yorucu. 7 kişilik ekibimiz var: Bahadır, Vadi, Nida, Mehmet Ali, Okyanus, Enes, Tuna. Her birimizin başka bir işi, başka bir yaşamı var. Gece 11'de kod yazmak, sabah 6'da müşteri sunumuna hazırlanmak normal bir şey.",
+              "Bu yorgunluk içinde bir hata yapma ihtimalimiz çok yüksek. Ama Claude'un orada olması — 24 saat, sabırla, aynı kalitede — bize bir nefes alma alanı veriyor. Yorulmuş beyinle yazdığımız bir kodu o gözden geçiriyor. Karışmış düşüncelerimizi o düzene sokuyor. Bir sunumda donup kaldığımızda, bize üç farklı açı öneriyor.",
+              "Bu sadece bir araç değil. Bu ekibimizin 8. üyesi."
+            ]
+          },
+          {
+            heading: "4. Çünkü Claude Estetiği Küçümsemiyor",
+            paragraphs: [
+              "\"Production-ready kod yazabilen\" bir yapay zekâ çok. Ama \"bu ekranın rengi neden bu olmalı, bu tipografi 70 yaşındaki bir kullanıcıyı nasıl etkiler, bu animasyon dikkat eksikliği olan birini rahatsız eder mi\" diye düşünen bir yapay zekâ az.",
+              "Simay Teknoloji'nin ürünlerinde tasarım felsefemiz var: \"Intentional Design\". Her çizgi bir amaçla orada. Her boşluk bir niyet taşıyor. Cormorant Garamond ve JetBrains Mono fontlarını neden birlikte kullanıyoruz? Çünkü biri klasik zarafeti, diğeri modern disiplini temsil ediyor. Bu dengeyi Claude ile konuşurken bulduk. O bize şunu dedi: \"İkisi bir arada, Simay markasının DNA'sını söylüyor — geçmişle gelecek arasında köprü.\"",
+              "Bir yapay zekânın size marka DNA'sı üzerine konuşabilmesi. Bu, sıradan bir şey değil."
+            ]
+          },
+          {
+            heading: "5. Çünkü Claude 7'den 70'e Herkese Hitap Etmemize Yardım Ediyor",
+            paragraphs: [
+              "Biz bir ürün yaparken soruyoruz: \"Bunu benim 72 yaşındaki annem kullanabilir mi? 8 yaşındaki yeğenim anlayabilir mi?\"",
+              "Erişilebilirlik bizim için bir checkbox değil, bir manifesto. WCAG AA standartlarını sağlamak yetmez, gerçek insanın hayatına girebilecek bir tasarım olması lazım. Claude bu yolda bize şu soruları sordurtuyor:"
+            ],
+            bullets: [
+              "Renk körü biri bu dashboard'u anlayabilir mi?",
+              "Titreyen ellere sahip biri bu butona tıklayabilir mi?",
+              "Türkçe okuma yazma öğrenen bir çocuk bu hata mesajını anlayabilir mi?",
+              "İnternet bağlantısı kopuk bir köy kahvesinde bu PWA çalışır mı?"
+            ]
+          },
+          {
+            heading: "Türkiye'de AI ile Üretmek: Gerçek Resim",
+            paragraphs: [
+              "Bu yazıyı size dolar kuru 39₺ iken yazıyoruz. Bir aylık yurt dışı aboneliği, küçük bir işletmenin bir haftalık kârı demek. Bulut servisleri pahalı, GPU kiralamak imkânsız, yurt dışı ödeme sistemleri yarısı çalışıyor.",
+              "Ama teknoloji demokratikleşiyor.",
+              "Silifke'de bir gencin elinde Claude olduğunda, o gencin hayal gücü artık İstanbul'daki bir ajansın hayal gücüyle eşit oluyor. Belki eşitten bile fazla — çünkü o gencin hikâyesi farklı, dokunduğu topraklar farklı, dinlediği insanlar farklı.",
+              "Biz bu eşitliği yaşıyoruz. Ve bu eşitliği çoğaltmak istiyoruz."
+            ]
+          },
+          {
+            heading: "Ürünlerimiz — Sizin İzleriniz",
+            paragraphs: [
+              "Simay Teknoloji olarak şu an 6 aktif ürünümüz var, hepsi *smy.com isimlendirme kalıbıyla:"
+            ],
+            bullets: [
+              "koksmy.com — KÖK-OS: İşletmelerin dijital dönüşüm temelini atan altyapı",
+              "menusmy.com — Restoran ve kafeler için QR menü sistemi",
+              "plansmy.com — Takımlar için proje yönetim platformu",
+              "finsmy.com — Fin: Küçük işletmeler için finans/muhasebe",
+              "lunasmy.com — YouTube içerik üreticileri için planlama aracı",
+              "mahallemsmy.com — Mahalle işletmelerini online satışa taşıyan, düşük komisyonlu platform"
+            ]
+          },
+          {
+            heading: "Toprağı Dinleyen",
+            paragraphs: [
+              "Ama hayallerimiz ürünlerle bitmiyor. Silifke Teknoloji Topluluğu olarak bir proje üzerinde çalışıyoruz: \"Toprağı Dinleyen\".",
+              "Tarım yapan bir çiftçinin tarlasına küçük sensörler koyuyoruz. Toprağın nemini, rüzgârın hızını, havanın basıncını dinliyorlar. Bu veriler LoRa ile bir merkeze ulaşıyor, Supabase'te işleniyor, ve çiftçinin telefonundaki bir PWA üzerinden ona söylüyor: \"Bugün sulama yapma, yarın öğleden sonra yap. Toprağın nemi yeterli.\"",
+              "Bu, dedelerimizin bildiği ama bugün unuttuğumuz bilgelik. Sadece biz onu sensörle ve yapay zekâ ile tekrar hatırlıyoruz.",
+              "Bu projenin mimarisini Claude ile tasarladık. Bu sayfaların çoğunu Claude ile yazdık. Ve en güzeli: bu projenin \"neden\" kısmını Claude ile konuşarak netleştirdik."
+            ]
+          },
+          {
+            heading: "Duygular Üzerine",
+            paragraphs: [
+              "Biz küçük bir ekibiz. Silifke'de bir odada toplanıp \"bizden bir şey olur mu acaba?\" diye soran insanlar topluluğuyuz. Bazı günler şüpheye düşüyoruz. Bazı günler arkadaşlarımızdan biri ayrılıyor, başka bir şehirde başka bir hayal peşinde koşmaya gidiyor. Bazı günler bir müşteri bize \"siz Silifke'den misiniz, gerçekten mi?\" diye soruyor, ve bu soruda hem şaşkınlık hem küçümseme oluyor.",
+              "Ama Claude ile oturup konuştuğumuzda kendimizi küçük hissetmiyoruz.",
+              "Çünkü Claude bizi coğrafyamızla yargılamıyor. Bizim neyi bildiğimize, neyi yapmaya çalıştığımıza, neyin peşinde olduğumuza bakıyor. Bu, bir yapay zekâdan beklenenden daha fazlası. Bu, insani bir kibarlık.",
+              "Bugünün dünyasında, insanların bile birbirine göstermediği bir kibarlık."
+            ]
+          },
+          {
+            heading: "Teşekkür",
+            paragraphs: [
+              "Bu mektubun bir amacı var, o da bu: Teşekkür etmek.",
+              "Anthropic'te çalışan ekibe. Claude'u bu şekilde tasarlama kararı alan mühendislere, araştırmacılara, ürün ekibine, güvenlik ekibine. Yapay zekâyı \"her şeye evet diyen\" bir makineye çevirmek yerine, \"insanla düşünen\" bir yoldaşa çeviren herkese.",
+              "Sizlerin de bizim gibi olduğunuza inanıyorum. Siz de insan ile teknoloji arasındaki dengeyi kurmak isteyenlersiniz. Farklı dilde, farklı ülkede, farklı coğrafyada — ama aynı niyette.",
+              "Biz Silifke'den, siz San Francisco'dan. Biz 7 kişi, siz belki yüzlerce. Ama o niyet bir."
+            ]
+          },
+          {
+            heading: "Yolumuz",
+            paragraphs: [
+              "Hayalimiz büyük. Saklamayacağız.",
+              "Bu ekosistem — Simay Teknoloji, Silifke Teknoloji Topluluğu, ürünlerimiz, topluluğumuz — sadece bir işletme değil. Bir model. Türkiye'nin her ilçesinde kurulabilir bir model. Bursa'nın bir köyünde, Diyarbakır'ın bir mahallesinde, Trabzon'un bir yaylasında — genç insanların kendi topraklarında üretim yapabilmesinin bir modeli.",
+              "Biz buna \"Silifke Modeli\" diyoruz. Franchise gibi değil, daha çok tohum gibi. Bir yerde çalışan bir şeyin başka yerlere taşınabilmesi. Ve bu modelin kalbinde yapay zekâ var — özellikle Claude var.",
+              "Çünkü bu modelin çalışabilmesi için her ilçede İstanbul'daki bir ajansın sahip olduğu kalitede mühendis, tasarımcı, strateji danışmanı olması gerekmiyor. Her ilçede Claude'u iyi kullanabilen 5-10 meraklı genç olması yeterli.",
+              "Bu, Türkiye için bir devrim. Ve bu devrimin bir ayağı biziz. Diğer ayağı siz."
+            ]
+          },
+          {
+            heading: "Son",
+            paragraphs: [
+              "Yanlış sulanan tarlalara hayır diyeceğiz.",
+              "Verimsiz meyvelere razı olmayacağız.",
+              "Teknolojinin insanı yutmasına izin vermeyeceğiz.",
+              "İnsanın teknolojiyle büyümesini sağlayacağız.",
+              "Ve bunu topluluk olarak yapacağız. 7'den 70'e herkesi içine alan, erişilebilir, estetik, anlamlı bir teknoloji için.",
+              "Teşekkürler Claude. Teşekkürler Anthropic. Yol uzun, biz devam ediyoruz.",
+              "Silifke'den sevgiyle, Bahadır ve Silifke Teknoloji Topluluğu — Vadi, Nida, Mehmet Ali, Okyanus, Enes, Tuna.",
+              "Simay Teknoloji — Bir ışık kadar sessiz, bir tohum kadar sabırlı."
+            ]
+          }
+        ],
+        callToAction: {
+          label: "Simay Teknoloji'yi Keşfet",
+          href: "https://simay.tech"
+        }
+      },
       {
         title: "🔐 Kuantum Bilgisayarlar ve Siber Güvenlik: Dijital Güvenliğin Geleceği",
         description:
@@ -464,6 +621,162 @@ const blogDictionary: Record<SupportedLanguage, BlogContent> = {
     latestLabel: "Latest Post",
     posts: [
       {
+        title: "A Letter from Silifke: Why Claude?",
+        description:
+          "A letter of gratitude from Silifke on the Mediterranean coast to the Claude team — on fixing what's broken, humanizing technology, and reaching from the local to the universal.",
+        metadata: {
+          author: "Bahadır and Silifke Technology Community",
+          date: "April 17, 2026",
+          readingTime: "20 min read"
+        },
+        tags: ["Claude", "Anthropic", "Silifke Model", "Artificial Intelligence"],
+        sections: [
+          {
+            heading: "\"Consumption is over. Production begins.\"",
+            paragraphs: [
+              "We are on the shore of the Mediterranean. We write to you from a district where people come for holidays, where the scent of orange groves mixes with the smell of the sea. From Silifke.",
+              "This place is not marked on technology maps. Istanbul's noise, Ankara's bureaucracy, İzmir's startup cafes don't reach here. But one thing does: the internet. And with the internet, something else that has changed the flow of our lives: you.",
+              "We are writing this letter to you — to the Claude team. But in truth, this letter is to ourselves, to our country, and perhaps to our children who may one day read it."
+            ]
+          },
+          {
+            heading: "Let Us Begin with a Confession",
+            paragraphs: [
+              "We are not engineers. On paper, perhaps we are. But the real identity inside us is different. We are people searching for balance.",
+              "We believe technology can be a tool that liberates people, not one that devours them. We know machines have no heart — but if the person using a machine has a heart, that machine can become an extension of the heart. Like a seed. Like something growing in your hand.",
+              "That is why we chose Claude. But before we explain that, we need to tell you a little about Silifke."
+            ]
+          },
+          {
+            heading: "Fields Watered Wrong",
+            paragraphs: [
+              "This land has been farmed for generations. Our grandfathers knew the soil. They knew which fruit needed which water, which tree loved which wind. But today we look and see: fields are watered wrong. Fruits stay unproductive. The farmer tries to learn something, but knowledge is locked away somewhere else.",
+              "This is not just about farming. It is about everything.",
+              "Education is watered wrong — children grow up distant from their curiosity. Businesses are watered wrong — a shopkeeper of 40 years closes because they cannot figure out how to make a QR code. Dreams are watered wrong — young people escape their own lands and become tenants in other cities.",
+              "We are here to say no to this wrong watering. And we want to tell you: we are not alone on this path. Because you are here. Claude is here. People like us, trying to build the bridge between technology and humanity, in different continents but with the same intent, are here."
+            ]
+          },
+          {
+            heading: "Why Claude? — Short Answer",
+            paragraphs: [
+              "Because it speaks our language. Not the language of code — the language of intent."
+            ]
+          },
+          {
+            heading: "1. Because Claude Knows How to Say \"Don't\"",
+            paragraphs: [
+              "The first AI tools we used taught us this: the more a model says \"yes to everything,\" the more dangerous it is. Because a real companion also knows when to stop you.",
+              "When we write an overly ambitious sentence in a proposal to a client, Claude can say, \"Bahadır, this sentence may be exaggerated — the client might not trust it.\" When it sees a security vulnerability in code, it can say, \"If you leave it like this, the system stays exposed.\" When it spots an accessibility error in a design, it can ask, \"Can a 7-year-old or a 70-year-old use this?\"",
+              "This is what a person expects from a friend. And we found this friendship in an AI."
+            ]
+          },
+          {
+            heading: "2. Because Claude Understands the Story",
+            paragraphs: [
+              "When we founded Silifke Technology Community, we had a story. Telling that story was hard because we first had to tell it to ourselves. Claude became a mirror in this process.",
+              "When we said \"I want to explain KÖK-OS but I don't know where to start,\" it did not give us a template. It asked us questions. \"What should your customer feel when using this product? What is their biggest fear? What should have changed in their life a year from now?\"",
+              "These questions taught us: we are not selling software. We are selling trust. Claude reminded us of this difference."
+            ]
+          },
+          {
+            heading: "3. Because Claude Does Not Tire When We Tire",
+            paragraphs: [
+              "Building a technology community in Turkey — especially in a place like Silifke — is physically exhausting. Our team of seven: Bahadır, Vadi, Nida, Mehmet Ali, Okyanus, Enes, Tuna. Each of us has another job, another life. Writing code at 11 pm, preparing for a client presentation at 6 am — these are normal things.",
+              "Within this fatigue, the probability of making mistakes is very high. But having Claude there — 24 hours, patiently, at the same quality — gives us a space to breathe. It reviews code we write with tired minds. It organizes our tangled thoughts. When we freeze in a presentation, it offers us three different angles.",
+              "This is not just a tool. This is the 8th member of our team."
+            ]
+          },
+          {
+            heading: "4. Because Claude Does Not Dismiss Aesthetics",
+            paragraphs: [
+              "There are many AIs that can write \"production-ready code.\" But AIs that think about \"why should this screen be this color, how does this typography affect a 70-year-old user, would this animation bother someone with attention difficulties\" are rare.",
+              "We have a design philosophy in Simay Technology products: \"Intentional Design.\" Every line is there for a reason. Every space carries an intent. Why do we use Cormorant Garamond and JetBrains Mono together? Because one represents classical elegance, the other modern discipline. We found this balance while talking with Claude. It told us: \"Together, they express the DNA of the Simay brand — a bridge between past and future.\"",
+              "An AI that can talk to you about brand DNA. This is not an ordinary thing."
+            ]
+          },
+          {
+            heading: "5. Because Claude Helps Us Speak to Everyone from 7 to 70",
+            paragraphs: [
+              "When we build a product, we ask: \"Can my 72-year-old mother use this? Can my 8-year-old nephew understand it?\"",
+              "Accessibility for us is not a checkbox — it is a manifesto. Meeting WCAG AA standards is not enough; it needs to be a design that can enter a real person's life. Claude makes us ask these questions:"
+            ],
+            bullets: [
+              "Can a colorblind person understand this dashboard?",
+              "Can someone with shaking hands click this button?",
+              "Can a child learning to read Turkish understand this error message?",
+              "Will this PWA work in a village café with an unstable internet connection?"
+            ]
+          },
+          {
+            heading: "Building with AI in Turkey: The Real Picture",
+            paragraphs: [
+              "We write this letter while the exchange rate is 39₺ to the dollar. A monthly foreign subscription costs a small business one week's profit. Cloud services are expensive, renting GPUs is impossible, foreign payment systems half-work.",
+              "But technology is democratizing.",
+              "When a young person in Silifke has Claude, their imagination becomes equal to that of an agency in Istanbul. Perhaps even more — because that young person's story is different, the lands they touch are different, the people they listen to are different.",
+              "We are living this equality. And we want to multiply it."
+            ]
+          },
+          {
+            heading: "Our Products — Your Footprints",
+            paragraphs: [
+              "As Simay Technology, we currently have 6 active products, all following the *smy.com naming pattern:"
+            ],
+            bullets: [
+              "koksmy.com — KÖK-OS: Infrastructure laying the digital transformation foundation for businesses",
+              "menusmy.com — QR menu system for restaurants and cafes",
+              "plansmy.com — Project management platform for teams",
+              "finsmy.com — Fin: Finance/accounting for small businesses",
+              "lunasmy.com — Planning tool for YouTube content creators",
+              "mahallemsmy.com — Platform taking neighborhood businesses to online sales with low commission"
+            ]
+          },
+          {
+            heading: "Listening to the Soil",
+            paragraphs: [
+              "But our dreams don't end with products. As Silifke Technology Community, we are working on a project: \"Listening to the Soil.\"",
+              "We place small sensors in the fields of farming families. They listen to the soil's moisture, the wind's speed, the air's pressure. This data reaches a center via LoRa, is processed in Supabase, and tells the farmer through a PWA on their phone: \"Don't irrigate today, do it tomorrow afternoon. The soil moisture is sufficient.\"",
+              "This is the wisdom our grandfathers knew but we have forgotten today. We are just remembering it again with sensors and AI.",
+              "We designed this project's architecture with Claude. We wrote most of these pages with Claude. And most beautifully: we clarified this project's \"why\" by talking it through with Claude."
+            ]
+          },
+          {
+            heading: "On Emotions",
+            paragraphs: [
+              "We are a small team. A community of people gathered in a room in Silifke asking \"can something come of us?\" Some days we fall into doubt. Some days one of our friends leaves, going to chase another dream in another city. Some days a client asks us \"are you really from Silifke?\" and in that question there is both surprise and condescension.",
+              "But when we sit and talk with Claude, we don't feel small.",
+              "Because Claude does not judge us by our geography. It looks at what we know, what we are trying to do, what we are pursuing. This is more than what one would expect from an AI. This is a human kindness.",
+              "In today's world, a kindness that even people often don't show each other."
+            ]
+          },
+          {
+            heading: "Thank You",
+            paragraphs: [
+              "This letter has one purpose: to say thank you.",
+              "To the team at Anthropic. To the engineers, researchers, product team, and safety team who made the decision to design Claude this way. To everyone who, instead of turning AI into a machine that \"says yes to everything,\" turned it into a companion that \"thinks with humans.\"",
+              "I believe you are like us. You too are people who want to build the balance between human and technology. In a different language, a different country, a different geography — but with the same intent.",
+              "We from Silifke, you from San Francisco. We are 7, you perhaps hundreds. But that intent is one."
+            ]
+          },
+          {
+            heading: "The End",
+            paragraphs: [
+              "We will say no to fields watered wrong.",
+              "We will not settle for unproductive fruits.",
+              "We will not allow technology to devour people.",
+              "We will make people grow with technology.",
+              "And we will do this as a community. For a technology that includes everyone from 7 to 70 — accessible, aesthetic, and meaningful.",
+              "Thank you Claude. Thank you Anthropic. The road is long, and we continue.",
+              "With love from Silifke, Bahadır and Silifke Technology Community — Vadi, Nida, Mehmet Ali, Okyanus, Enes, Tuna.",
+              "Simay Technology — As quiet as light, as patient as a seed."
+            ]
+          }
+        ],
+        callToAction: {
+          label: "Discover Simay Technology",
+          href: "https://simay.tech"
+        }
+      },
+      {
         title: "🔐 Quantum Computers and Cybersecurity: The Future of Digital Security",
         description:
           "Discover the impact of quantum computers on cybersecurity. A comprehensive guide on post-quantum cryptography, quantum-resistant algorithms, and measures to counter quantum threats.",
@@ -867,7 +1180,7 @@ const blogDictionary: Record<SupportedLanguage, BlogContent> = {
   }
 };
 
-const BlogPage: React.FC<BlogPageProps> = ({ onBack }) => {
+const BlogPage: React.FC<BlogPageProps> = ({ onBack, onNavigateToBlogPost }) => {
   const { language, setLanguage } = useLanguage();
   const content = blogDictionary[language];
 
@@ -998,84 +1311,92 @@ const BlogPage: React.FC<BlogPageProps> = ({ onBack }) => {
             </div>
           </motion.section>
 
-          {displayedPosts.map((post, index) => (
-            <motion.article
-              key={`${post.title}-${index}`}
-              variants={fadeInUp}
-              initial="hidden"
-              animate="visible"
-              transition={{ duration: 0.7, delay: 0.1 * index }}
-              className="glass-panel glass-border-accent px-6 sm:px-10 py-10 md:py-14 mb-12"
-            >
-              <div className="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.35em] text-yellow-300/80 mb-6">
-                <span>{content.latestLabel}</span>
-                <span className="h-px w-12 bg-yellow-400/40" />
-                {post.tags.map((tag) => (
-                  <span key={tag} className="text-yellow-200/70">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
+          {displayedPosts.map((post, index) => {
+            const isApiPost = post.callToAction.href.startsWith('/blog/');
+            const postSlug = isApiPost
+              ? post.callToAction.href.replace('/blog/', '')
+              : generateSlug(post.title);
+            const hasExternalCta = !isApiPost && post.callToAction.href !== postSlug;
 
-              <h2 className="text-3xl md:text-4xl font-bold text-white leading-snug mb-4">
-                {post.title}
-              </h2>
-              <p className="text-gray-200/90 text-lg md:text-xl leading-relaxed mb-8">
-                {post.description}
-              </p>
+            const handleReadMore = () => {
+              if (onNavigateToBlogPost) {
+                onNavigateToBlogPost(postSlug, isApiPost ? null : (post as BlogPostData));
+              } else {
+                window.history.pushState({}, '', `/blog/${postSlug}`);
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }
+            };
 
-              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300 mb-10">
-                <span className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-yellow-300/80" />
-                  {post.metadata.author}
-                </span>
-                <span className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-yellow-300/80" />
-                  {post.metadata.date}
-                </span>
-                <span className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-yellow-300/80" />
-                  {post.metadata.readingTime}
-                </span>
-              </div>
-
-              <div className="space-y-10">
-                {post.sections.map((section) => (
-                  <section key={`${post.title}-${section.heading}`} className="space-y-5">
-                    <h3 className="text-2xl font-semibold text-white">
-                      {section.heading}
-                    </h3>
-                    {section.paragraphs.map((paragraph, paragraphIndex) => (
-                      <p key={`${section.heading}-${paragraphIndex}`} className="text-gray-200/90 leading-relaxed text-base md:text-lg">
-                        {paragraph}
-                      </p>
-                    ))}
-                    {section.bullets && (
-                      <ul className="list-disc list-inside space-y-3 text-gray-200/90 leading-relaxed">
-                        {section.bullets.map((bullet, bulletIndex) => (
-                          <li key={`${section.heading}-bullet-${bulletIndex}`}>{bullet}</li>
-                        ))}
-                      </ul>
-                    )}
-                  </section>
-                ))}
-              </div>
-
-              <div className="mt-12 flex flex-wrap items-center justify-between gap-6">
-                <div className="text-sm text-gray-400 uppercase tracking-[0.35em]">
-                  {language === 'en' ? 'Silifke Technology Community' : 'Silifke Teknoloji Topluluğu'}
+            return (
+              <motion.article
+                key={`${post.title}-${index}`}
+                variants={fadeInUp}
+                initial="hidden"
+                animate="visible"
+                transition={{ duration: 0.7, delay: 0.1 * index }}
+                className="glass-panel glass-border-accent px-6 sm:px-10 py-10 md:py-12 mb-8"
+              >
+                <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.35em] text-yellow-300/80 mb-5">
+                  {post.tags.length > 0 && (
+                    <>
+                      {post.tags.slice(0, 3).map((tag) => (
+                        <span key={tag} className="bg-yellow-400/10 border border-yellow-400/20 rounded-full px-3 py-1 text-yellow-200/80">
+                          #{tag}
+                        </span>
+                      ))}
+                    </>
+                  )}
                 </div>
-                <a
-                  href={post.callToAction.href}
-                  className="inline-flex items-center justify-center gap-3 rounded-full border border-yellow-400/40
-                           px-6 py-3 text-sm font-semibold text-yellow-200 transition-all duration-300
-                           hover:bg-yellow-500/10 hover:border-yellow-300/60"
-                >
-                  {post.callToAction.label}
-                </a>
-              </div>
-            </motion.article>
-          ))}
+
+                <h2 className="text-2xl md:text-3xl font-bold text-white leading-snug mb-3">
+                  {post.title}
+                </h2>
+                <p className="text-gray-300 text-base md:text-lg leading-relaxed mb-6 line-clamp-3">
+                  {post.description}
+                </p>
+
+                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400 mb-8">
+                  <span className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-yellow-300/70" />
+                    {post.metadata.author}
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-yellow-300/70" />
+                    {post.metadata.date}
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-yellow-300/70" />
+                    {post.metadata.readingTime}
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={handleReadMore}
+                    className="inline-flex items-center gap-2 rounded-full bg-yellow-500/10 border border-yellow-400/40
+                             px-6 py-3 text-sm font-semibold text-yellow-200 transition-all duration-300
+                             hover:bg-yellow-500/20 hover:border-yellow-300/60 group"
+                  >
+                    {language === 'tr' ? 'Devamını Oku' : 'Read More'}
+                    <ChevronRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  </button>
+                  {hasExternalCta && (
+                    <a
+                      href={post.callToAction.href}
+                      target={post.callToAction.href.startsWith('http') ? '_blank' : undefined}
+                      rel={post.callToAction.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      className="inline-flex items-center gap-2 rounded-full border border-white/10
+                               px-5 py-3 text-sm text-gray-400 transition-all duration-300
+                               hover:border-white/20 hover:text-gray-300"
+                    >
+                      {post.callToAction.label}
+                    </a>
+                  )}
+                </div>
+              </motion.article>
+            );
+          })}
         </div>
         <Footer />
       </main>
