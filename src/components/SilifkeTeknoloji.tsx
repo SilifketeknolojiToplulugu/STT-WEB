@@ -939,7 +939,7 @@ const SilifkeTeknoloji: React.FC = () => {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-yellow-400 transition-all duration-300 group-hover:w-full"></span>
             </button>
             <a
-              href="https://silifke-club-panel.vercel.app/"
+              href="https://www.plansmy.com/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-white hover:text-yellow-400 transition-all duration-300 font-semibold text-base sm:text-lg lg:text-xl xl:text-2xl tracking-wide hover:scale-110 relative group"
@@ -1119,7 +1119,7 @@ const SilifkeTeknoloji: React.FC = () => {
                   </button>
 
                   <a
-                    href="https://silifke-club-panel.vercel.app/"
+                    href="https://www.plansmy.com/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full text-left px-6 py-4 rounded-xl text-gray-300 hover:text-white

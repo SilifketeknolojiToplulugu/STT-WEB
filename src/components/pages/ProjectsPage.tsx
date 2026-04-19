@@ -136,7 +136,7 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onBack }) => {
       status: 'completed' as const,
       technologies: ['React', 'TypeScript', 'Node.js', 'Supabase', 'Tailwind CSS'],
       teamSize: 4,
-      demoUrl: 'https://silifke-club-panel.vercel.app',
+      demoUrl: 'https://www.plansmy.com/',
       translations: {
         tr: {
           title: "Silifke Teknoloji Topluluğu Organizasyon Paneli",
