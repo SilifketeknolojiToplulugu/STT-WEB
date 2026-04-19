@@ -1608,12 +1608,13 @@ const SilifkeTeknoloji: React.FC = () => {
         </div>
       </motion.aside>
 
+
       {/* Floating Quick Actions — Mobile (sm–lg) */}
       <motion.aside
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.8, ease: "easeOut" }}
-        className="flex xl:hidden fixed bottom-5 right-4 z-30"
+        className="flex xl:hidden fixed bottom-5 right-4 z-[35]"
       >
         <div className="glass-panel glass-border-accent p-3 w-44 shadow-yellow-500/15">
           <div className="mb-2">
