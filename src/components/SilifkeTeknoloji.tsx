@@ -108,7 +108,8 @@ const SilifkeTeknoloji: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<CurrentPage>('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAdminAuthorized, setIsAdminAuthorized] = useState(false);
-  const [isQuickVideoPlaying, setIsQuickVideoPlaying] = useState(false);
+  const [isDesktopVideoPlaying, setIsDesktopVideoPlaying] = useState(false);
+  const [isMobileVideoPlaying, setIsMobileVideoPlaying] = useState(false);
   const [pendingScrollTarget, setPendingScrollTarget] = useState<'faq' | null>(null);
   const [pendingBlogPost, setPendingBlogPost] = useState<import('./pages/BlogPage').BlogPostData | null>(null);
   const { scrollY } = useScroll();
@@ -1575,7 +1576,7 @@ const SilifkeTeknoloji: React.FC = () => {
             <h3 className="mt-1 text-sm font-semibold text-white">{isTR ? 'Tanıtım Videomuz' : 'Our Intro Video'}</h3>
           </div>
           <div className="overflow-hidden rounded-xl border border-white/10 bg-white/5">
-            {isQuickVideoPlaying ? (
+            {isDesktopVideoPlaying ? (
               <iframe
                 className="h-32 w-full"
                 src={quickAccessVideoUrl}
@@ -1586,7 +1587,7 @@ const SilifkeTeknoloji: React.FC = () => {
             ) : (
               <button
                 type="button"
-                onClick={() => setIsQuickVideoPlaying(true)}
+                onClick={() => setIsDesktopVideoPlaying(true)}
                 className="group relative block h-32 w-full overflow-hidden bg-transparent text-left"
               >
                 <img
@@ -1622,7 +1623,7 @@ const SilifkeTeknoloji: React.FC = () => {
             <h3 className="text-xs font-semibold text-white leading-tight">{isTR ? 'Tanıtım Videosu' : 'Intro Video'}</h3>
           </div>
           <div className="overflow-hidden rounded-lg border border-white/10 bg-white/5">
-            {isQuickVideoPlaying ? (
+            {isMobileVideoPlaying ? (
               <iframe
                 className="h-24 w-full"
                 src={quickAccessVideoUrl}
@@ -1633,7 +1634,7 @@ const SilifkeTeknoloji: React.FC = () => {
             ) : (
               <button
                 type="button"
-                onClick={() => setIsQuickVideoPlaying(true)}
+                onClick={() => setIsMobileVideoPlaying(true)}
                 className="group relative block h-24 w-full overflow-hidden bg-transparent text-left"
               >
                 <img
