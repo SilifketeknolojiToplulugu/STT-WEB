@@ -3,15 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     
-    <!-- Security Headers -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta http-equiv="X-Frame-Options" content="DENY" />
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <!-- Security headers are served via vercel.json (HTTP headers).
+         Meta-tag versions are removed because:
+         - X-Frame-Options, X-Content-Type-Options, HSTS only work as HTTP headers
+         - frame-ancestors directive in CSP only works as HTTP header
+         - 'speaker' Permissions-Policy feature is no longer recognized -->
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), speaker=()" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://i.ytimg.com https://img.youtube.com; connect-src 'self' https://*.supabase.co https://*.supabase.in; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
-    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload" />
-    
+
     <!-- Favicon and PWA -->
     <link rel="icon" type="image/png" sizes="32x32" href="/logo-64.png" />
     <link rel="apple-touch-icon" href="/logo-128.png" />

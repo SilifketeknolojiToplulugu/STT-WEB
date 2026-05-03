@@ -706,11 +706,15 @@ const SilifkeTeknoloji: React.FC = () => {
   };
 
   const handleAdminLogout = () => {
-    const session = getStoredAdminSession();
     setIsAdminAuthorized(false);
-    logoutAdminSession(session?.token).finally(() => {
-      clearAdminSession();
-    });
+    void (async () => {
+      const session = await getStoredAdminSession();
+      try {
+        await logoutAdminSession(session?.token);
+      } finally {
+        clearAdminSession();
+      }
+    })();
     setIsMobileMenuOpen(false);
   };
 
@@ -744,14 +748,17 @@ const SilifkeTeknoloji: React.FC = () => {
 
   useEffect(() => {
     let cancelled = false;
-    const session = getStoredAdminSession();
-
-    if (!session) {
-      clearAdminSession();
-      return;
-    }
 
     const runValidation = async () => {
+      const session = await getStoredAdminSession();
+
+      if (!session) {
+        if (!cancelled) {
+          setIsAdminAuthorized(false);
+        }
+        return;
+      }
+
       const isValid = await validateAdminSession(session);
       if (!cancelled) {
         if (isValid) {
@@ -763,7 +770,7 @@ const SilifkeTeknoloji: React.FC = () => {
       }
     };
 
-    runValidation();
+    void runValidation();
 
     return () => {
       cancelled = true;

@@ -5,9 +5,10 @@ export const ADMIN_STORAGE_KEY = 'silifke-tech-admin-session';
 export type AdminSession = {
   token: string;
   expiresAt: number;
+  userId?: string;
 };
 
-export type AdminAuthErrorCode = 'CONFIG' | 'INVALID_CREDENTIALS' | 'NETWORK' | 'UNKNOWN';
+export type AdminAuthErrorCode = 'CONFIG' | 'INVALID_CREDENTIALS' | 'NOT_ADMIN' | 'NETWORK' | 'UNKNOWN';
 
 export class AdminAuthError extends Error {
   code: AdminAuthErrorCode;
@@ -19,36 +20,71 @@ export class AdminAuthError extends Error {
   }
 }
 
-function parseStoredSession(rawValue: string | null): AdminSession | null {
-  if (!rawValue) return null;
+/**
+ * Verifies that the given Supabase auth user has an entry in the public.admins table.
+ * Returns true if the user is an admin, false otherwise.
+ */
+async function verifyIsAdmin(userId: string): Promise<boolean> {
+  try {
+    const { data, error } = await supabase
+      .from('admins')
+      .select('user_id')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (error) {
+      console.warn('Failed to verify admin status', error);
+      return false;
+    }
+
+    return Boolean(data);
+  } catch (error) {
+    console.warn('Failed to verify admin status', error);
+    return false;
+  }
+}
+
+function buildSession(token: string, expiresAtSec: number | null | undefined, userId?: string): AdminSession {
+  const expiresAt = typeof expiresAtSec === 'number' ? expiresAtSec * 1000 : Date.now() + 60 * 60 * 1000;
+  return { token, expiresAt, userId };
+}
+
+/** Returns the active admin session if the user is signed in via Supabase auth. */
+export async function getStoredAdminSession(): Promise<AdminSession | null> {
+  if (typeof window === 'undefined') return null;
 
   try {
-    const parsed = JSON.parse(rawValue) as Partial<AdminSession>;
-    if (!parsed || typeof parsed.token !== 'string') return null;
+    const { data, error } = await supabase.auth.getSession();
+    if (error || !data.session) return null;
 
-    const expiresAt = typeof parsed.expiresAt === 'number' ? parsed.expiresAt : Date.now();
-    return { token: parsed.token, expiresAt };
+    return buildSession(
+      data.session.access_token,
+      data.session.expires_at,
+      data.session.user.id,
+    );
   } catch (error) {
-    console.error('Failed to parse stored admin session', error);
+    console.warn('Failed to read Supabase session', error);
     return null;
   }
 }
 
-export function getStoredAdminSession(): AdminSession | null {
-  if (typeof window === 'undefined') return null;
-  return parseStoredSession(window.localStorage.getItem(ADMIN_STORAGE_KEY));
-}
-
-export function storeAdminSession(session: AdminSession) {
-  if (typeof window === 'undefined') return;
-  window.localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(session));
-}
-
+/** Removes the local Supabase auth session. */
 export function clearAdminSession() {
   if (typeof window === 'undefined') return;
-  window.localStorage.removeItem(ADMIN_STORAGE_KEY);
+  // Best-effort sign-out; ignored if it fails.
+  void supabase.auth.signOut().catch(() => undefined);
+  // Legacy key cleanup (from the old custom JWT flow)
+  try {
+    window.localStorage.removeItem(ADMIN_STORAGE_KEY);
+  } catch {
+    // ignore
+  }
 }
 
+/**
+ * Authenticate via Supabase auth (email + password) and verify that the user is in the admins table.
+ * The `username` parameter accepts an email address.
+ */
 export async function loginAsAdmin(username: string, password: string): Promise<AdminSession> {
   if (!isSupabaseConfigured) {
     throw new AdminAuthError(
@@ -57,33 +93,38 @@ export async function loginAsAdmin(username: string, password: string): Promise<
     );
   }
 
+  const email = username.trim();
+  if (!email) {
+    throw new AdminAuthError('INVALID_CREDENTIALS', 'Email is required.');
+  }
+
   try {
-    const { data, error } = await supabase.functions.invoke('admin_session', {
-      body: {
-        action: 'login',
-        username,
-        password,
-      },
-    });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      if (error.message?.toLowerCase().includes('invalid credentials')) {
-        throw new AdminAuthError('INVALID_CREDENTIALS', 'Username or password is incorrect.');
+      const msg = error.message?.toLowerCase() ?? '';
+      if (msg.includes('invalid') || msg.includes('credentials')) {
+        throw new AdminAuthError('INVALID_CREDENTIALS', 'Email or password is incorrect.');
       }
-
       console.error('Admin login failed', error);
-      throw new AdminAuthError('UNKNOWN', 'Unable to authorise administrator.');
+      throw new AdminAuthError('UNKNOWN', error.message || 'Unable to authorise administrator.');
     }
 
-    if (!data || typeof data.token !== 'string') {
-      throw new AdminAuthError('UNKNOWN', 'No session token returned from server.');
+    if (!data.session || !data.user) {
+      throw new AdminAuthError('UNKNOWN', 'No session returned from Supabase.');
     }
 
-    const expiresAt = typeof data.expiresAt === 'number' ? data.expiresAt : Date.now() + 60 * 60 * 1000;
-    const session: AdminSession = { token: data.token, expiresAt };
+    const isAdmin = await verifyIsAdmin(data.user.id);
+    if (!isAdmin) {
+      // Sign the user out so they don't keep a non-admin session around.
+      await supabase.auth.signOut().catch(() => undefined);
+      throw new AdminAuthError(
+        'NOT_ADMIN',
+        'This account does not have admin privileges.',
+      );
+    }
 
-    storeAdminSession(session);
-    return session;
+    return buildSession(data.session.access_token, data.session.expires_at, data.user.id);
   } catch (error) {
     if (error instanceof AdminAuthError) {
       throw error;
@@ -94,59 +135,41 @@ export async function loginAsAdmin(username: string, password: string): Promise<
   }
 }
 
+/** Confirms the stored Supabase session is still valid AND belongs to an admin user. */
 export async function validateAdminSession(session: AdminSession): Promise<boolean> {
-  if (!isSupabaseConfigured) {
-    return false;
-  }
-
-  if (!session || typeof session.token !== 'string') {
-    return false;
-  }
-
-  if (session.expiresAt <= Date.now()) {
-    return false;
-  }
+  if (!isSupabaseConfigured) return false;
+  if (!session || typeof session.token !== 'string') return false;
+  if (session.expiresAt <= Date.now()) return false;
 
   try {
-    const { data, error } = await supabase.functions.invoke('admin_session', {
-      body: {
-        action: 'validate',
-        token: session.token,
-      },
-    });
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data.user) return false;
 
-    if (error) {
-      console.warn('Admin session validation failed', error);
-      return false;
-    }
-
-    if (data?.valid && typeof data.expiresAt === 'number') {
-      const refreshedSession: AdminSession = { token: session.token, expiresAt: data.expiresAt };
-      storeAdminSession(refreshedSession);
-    }
-
-    return Boolean(data?.valid);
+    return await verifyIsAdmin(data.user.id);
   } catch (error) {
     console.warn('Failed to validate admin session', error);
     return false;
   }
 }
 
-export async function logoutAdminSession(token?: string) {
-  clearAdminSession();
-
-  if (!isSupabaseConfigured || !token) {
+/** Signs the admin out via Supabase auth. The `token` param is accepted for backwards compatibility. */
+export async function logoutAdminSession(_token?: string) {
+  if (!isSupabaseConfigured) {
+    clearAdminSession();
     return;
   }
 
   try {
-    await supabase.functions.invoke('admin_session', {
-      body: {
-        action: 'logout',
-        token,
-      },
-    });
+    await supabase.auth.signOut();
   } catch (error) {
-    console.warn('Failed to notify admin logout', error);
+    console.warn('Failed to sign out from Supabase', error);
+  }
+
+  try {
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(ADMIN_STORAGE_KEY);
+    }
+  } catch {
+    // ignore
   }
 }

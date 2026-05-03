@@ -12,7 +12,7 @@ type AdminLoginProps = {
 const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onBack }) => {
   const { language } = useLanguage();
   const isTR = language === 'tr';
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,11 +22,11 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onBack }) => {
     setError('');
     setIsSubmitting(true);
 
-    const trimmedUsername = username.trim();
+    const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
 
     try {
-      await loginAsAdmin(trimmedUsername, trimmedPassword);
+      await loginAsAdmin(trimmedEmail, trimmedPassword);
       setIsSubmitting(false);
       onSuccess();
     } catch (error) {
@@ -43,8 +43,13 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onBack }) => {
             break;
           case 'INVALID_CREDENTIALS':
             message = isTR
-              ? 'Kullanıcı adı veya şifre hatalı.'
-              : 'Username or password is incorrect.';
+              ? 'E-posta veya şifre hatalı.'
+              : 'Email or password is incorrect.';
+            break;
+          case 'NOT_ADMIN':
+            message = isTR
+              ? 'Bu hesabın yönetim paneline erişim yetkisi yok.'
+              : 'This account does not have admin privileges.';
             break;
           case 'NETWORK':
             message = isTR
@@ -115,13 +120,14 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess, onBack }) => {
 
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-2 text-left">
-                <label className="text-sm font-semibold text-gray-300">{isTR ? 'Kullanıcı Adı' : 'Username'}</label>
+                <label className="text-sm font-semibold text-gray-300">{isTR ? 'E-posta' : 'Email'}</label>
                 <input
-                  value={username}
-                  onChange={(event) => setUsername(event.target.value)}
-                  placeholder={isTR ? 'Yönetici kullanıcı adını girin' : 'Enter administrator username'}
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder={isTR ? 'Yönetici e-postasını girin' : 'Enter administrator email'}
                   className="w-full rounded-xl border border-gray-700 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400/20 transition"
-                  autoComplete="username"
+                  autoComplete="email"
                   disabled={isSubmitting}
                   required
                 />

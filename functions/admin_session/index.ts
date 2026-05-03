@@ -32,10 +32,22 @@ const decoder = new TextDecoder();
 const DEFAULT_TTL_SECONDS = Number(Deno.env.get('ADMIN_SESSION_TTL_SECONDS') ?? '3600');
 
 Deno.serve(async (req) => {
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Max-Age': '86400',
+  };
+
   const headers = {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
+    ...corsHeaders,
   };
+
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders });
+  }
 
   if (req.method !== 'POST') {
     return new Response(
